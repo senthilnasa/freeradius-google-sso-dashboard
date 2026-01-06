@@ -206,9 +206,24 @@ See [.env.example](.env.example) for complete configuration options.
 
 - **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design
 - **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Complete deployment guide
+- **[ACCESS-POINT-CONFIGURATION.md](docs/ACCESS-POINT-CONFIGURATION.md)** - Configure Ruckus, Aruba, and UniFi APs
 - **[IMPLEMENTATION-STATUS.md](docs/IMPLEMENTATION-STATUS.md)** - Project progress
 - **API Documentation** - Coming soon
 - **Operations Manual** - Coming soon
+
+### Access Point Configuration
+
+The system supports major enterprise AP vendors. See [ACCESS-POINT-CONFIGURATION.md](docs/ACCESS-POINT-CONFIGURATION.md) for detailed setup guides:
+
+- **Ruckus** - SmartZone / ZoneDirector / Unleashed
+- **Aruba** - Mobility Controller / Instant
+- **UniFi** - Network Controller
+
+Each guide includes:
+- Step-by-step RADIUS configuration
+- SSID/WLAN creation with WPA2/WPA3 Enterprise
+- Dynamic VLAN assignment setup
+- Testing and troubleshooting procedures
 
 ## 🎯 VLAN Assignment Logic
 
