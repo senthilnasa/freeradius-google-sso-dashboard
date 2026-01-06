@@ -1,0 +1,292 @@
+# =====================================================
+# FreeRADIUS Google SSO Dashboard - .gitignore
+# =====================================================
+
+# =====================================================
+# Environment and Secrets
+# =====================================================
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# SSL Certificates and Private Keys
+ssl/
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+certbot/
+!ssl/.gitkeep
+
+# =====================================================
+# Docker and Volumes
+# =====================================================
+# Docker volumes and data
+mysql-data/
+redis-data/
+certbot-etc/
+certbot-var/
+nginx-webroot/
+
+# Docker override files
+docker-compose.override.yml
+docker-compose.local.yml
+
+# =====================================================
+# Logs
+# =====================================================
+logs/
+*.log
+log/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# FreeRADIUS logs
+freeradius/logs/
+radius.log
+radius.log.*
+
+# Nginx logs
+nginx/logs/
+access.log
+error.log
+
+# PHP logs
+admin-dashboard/logs/
+php_errors.log
+php-fpm.log
+
+# Captive Portal logs
+captive-portal/logs/
+app.log
+
+# =====================================================
+# Dependencies
+# =====================================================
+# PHP (Composer)
+vendor/
+composer.phar
+composer.lock
+
+# Go (Golang)
+captive-portal/captive-portal
+captive-portal/vendor/
+go.sum
+
+# Node.js (if any)
+node_modules/
+package-lock.json
+yarn.lock
+
+# =====================================================
+# IDE and Editor Files
+# =====================================================
+# VSCode
+.vscode/
+*.code-workspace
+.history/
+
+# JetBrains IDEs (PhpStorm, GoLand, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.sw?
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# =====================================================
+# Operating System Files
+# =====================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+
+# =====================================================
+# Temporary and Cache Files
+# =====================================================
+tmp/
+temp/
+*.tmp
+*.cache
+*.bak
+*.swp
+*.swo
+*.orig
+.cache/
+
+# PHP cache
+*.php~
+.phpunit.cache/
+opcache/
+
+# Twig cache
+admin-dashboard/cache/
+twig_cache/
+
+# Go build cache
+*.test
+*.out
+
+# =====================================================
+# Database Files
+# =====================================================
+# SQLite databases
+*.sqlite
+*.sqlite3
+*.db
+
+# MySQL dumps
+*.sql
+*.sql.gz
+mysql/dumps/
+
+# Database backups
+backup/
+backups/
+*.backup
+
+# =====================================================
+# Build and Distribution
+# =====================================================
+dist/
+build/
+out/
+target/
+
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go binaries
+captive-portal/bin/
+captive-portal/build/
+
+# =====================================================
+# Testing
+# =====================================================
+coverage/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+.pytest_cache/
+phpunit.xml
+.phpunit.result.cache
+
+# =====================================================
+# Project Specific
+# =====================================================
+# FreeRADIUS sensitive data
+freeradius/certs/
+freeradius/mods-config/sql/counter/
+freeradius/raddb/certs/
+
+# Admin Dashboard
+admin-dashboard/vendor/
+admin-dashboard/.phpunit.cache/
+admin-dashboard/storage/
+admin-dashboard/bootstrap/cache/
+
+# Captive Portal
+captive-portal/captive-portal
+captive-portal/tmp/
+captive-portal/.air/
+
+# MySQL initialization backups
+mysql/init/*.backup
+
+# Exports and reports
+exports/
+reports/
+*.csv
+*.xlsx
+*.xls
+
+# Session files
+sessions/
+*.sess
+
+# =====================================================
+# Configuration Overrides
+# =====================================================
+# Local configuration overrides
+config.local.php
+settings.local.php
+.claude/settings.local.json
+
+# Custom FreeRADIUS configs (keep examples)
+freeradius/config/*.local
+!freeradius/config/*.example
+
+# =====================================================
+# Documentation Build
+# =====================================================
+docs/_build/
+docs/.doctrees/
+site/
+
+# =====================================================
+# Miscellaneous
+# =====================================================
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Large files
+*.iso
+*.dmg
+
+# Claude Code
+.claude/
+!.claude/settings.json
+!.claude/README.md
+
+# Git patches
+*.patch
+*.diff
+
+# Lock files (keep for reproducibility, but comment out if needed)
+# package-lock.json
+# composer.lock
+# go.sum

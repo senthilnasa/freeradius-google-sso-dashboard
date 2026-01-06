@@ -1,0 +1,232 @@
+# -*- text -*-
+##
+## FreeRADIUS Default Virtual Server Configuration
+## With Dynamic VLAN Assignment Support
+##
+
+server default {
+    # Listen on authentication port
+    listen {
+        type = auth
+        ipaddr = *
+        port = 1812
+        limit {
+            max_connections = 256
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+
+    # Listen on accounting port
+    listen {
+        type = acct
+        ipaddr = *
+        port = 1813
+        limit {
+            max_connections = 256
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+
+    # =====================================================
+    # Authorization Section
+    # =====================================================
+    authorize {
+        # Filter username to prevent SQL injection
+        filter_username
+
+        # Pre-process: Rewrite username if needed
+        preprocess
+
+        # Check for valid username format
+        if (!User-Name) {
+            reject
+        }
+
+        # Lookup user in SQL database
+        sql
+
+        # Check if user exists and has VLAN assigned
+        if (sql_row_count > 0) {
+            # User found in database
+            update request {
+                &control:Auth-Type := Accept
+            }
+
+            # Log for debugging
+            if ("%{sql:SELECT vlan_id FROM sessions WHERE username='%{User-Name}' AND is_active=1 ORDER BY created_at DESC LIMIT 1}") {
+                update reply {
+                    &Tunnel-Type := VLAN
+                    &Tunnel-Medium-Type := IEEE-802
+                    &Tunnel-Private-Group-Id := "%{sql:SELECT vlan_id FROM sessions WHERE username='%{User-Name}' AND is_active=1 ORDER BY created_at DESC LIMIT 1}"
+                    &Class := "%{sql:SELECT user_type FROM sessions WHERE username='%{User-Name}' AND is_active=1 ORDER BY created_at DESC LIMIT 1}"
+                }
+            }
+        }
+        else {
+            # User not found - reject
+            update control {
+                &Auth-Type := Reject
+            }
+        }
+
+        # Process group membership
+        # sql.group_membership
+
+        # Load VLAN attributes from radreply table
+        if (ok || updated) {
+            # Check for Tunnel attributes in radreply
+            if (&reply:Tunnel-Type) {
+                # VLAN already set from database
+                noop
+            }
+        }
+
+        # Policy processing
+        expiration
+        logintime
+
+        # PAP authentication
+        pap
+    }
+
+    # =====================================================
+    # Authentication Section
+    # =====================================================
+    authenticate {
+        # PAP authentication using database
+        Auth-Type PAP {
+            pap
+        }
+
+        # CHAP authentication
+        Auth-Type CHAP {
+            chap
+        }
+
+        # MS-CHAP authentication
+        Auth-Type MS-CHAP {
+            mschap
+        }
+
+        # EAP authentication (for 802.1X)
+        eap
+
+        # Accept authentication (for pre-authorized users)
+        Auth-Type Accept {
+            ok
+        }
+
+        # Reject authentication
+        Auth-Type Reject {
+            reject
+        }
+    }
+
+    # =====================================================
+    # Pre-Accounting Section
+    # =====================================================
+    preacct {
+        preprocess
+        acct_unique
+        suffix
+        files
+    }
+
+    # =====================================================
+    # Accounting Section
+    # =====================================================
+    accounting {
+        # Log accounting data to SQL
+        sql
+
+        # Log to detail file (for debugging)
+        # detail
+
+        # Unix system accounting
+        # unix
+
+        # Radutmp for who's online
+        # radutmp
+
+        # Execute external script (optional)
+        # exec
+
+        # Attribute filter for accounting response
+        attr_filter.accounting_response
+    }
+
+    # =====================================================
+    # Session Section (simultaneous-use check)
+    # =====================================================
+    session {
+        sql
+    }
+
+    # =====================================================
+    # Post-Auth Section
+    # =====================================================
+    post-auth {
+        # Log successful authentication
+        sql
+
+        # Update reply with VLAN if not already set
+        if (!&reply:Tunnel-Type) {
+            if ("%{sql:SELECT vlan_id FROM sessions WHERE username='%{User-Name}' AND is_active=1 ORDER BY created_at DESC LIMIT 1}") {
+                update reply {
+                    &Tunnel-Type := VLAN
+                    &Tunnel-Medium-Type := IEEE-802
+                    &Tunnel-Private-Group-Id := "%{sql:SELECT vlan_id FROM sessions WHERE username='%{User-Name}' AND is_active=1 ORDER BY created_at DESC LIMIT 1}"
+                    &Class := "%{sql:SELECT user_type FROM sessions WHERE username='%{User-Name}' AND is_active=1 ORDER BY created_at DESC LIMIT 1}"
+                }
+            }
+        }
+
+        # Remove unnecessary attributes from reply
+        # attr_filter.access_accept
+
+        # Execute post-auth script (optional)
+        # exec
+
+        # Handle rejected authentications
+        Post-Auth-Type REJECT {
+            # Log failed authentication
+            sql
+
+            # Attribute filter for Access-Reject
+            attr_filter.access_reject
+
+            # EAP failure message
+            eap
+
+            # Remove reply message if not needed
+            remove_reply_message_if_eap
+        }
+
+        # CoA (Change of Authorization) handling
+        Post-Auth-Type Challenge {
+            # Handle EAP challenges
+            eap
+        }
+    }
+
+    # =====================================================
+    # Pre-Proxy Section (for proxying)
+    # =====================================================
+    pre-proxy {
+        # Uncomment if using proxy
+        # attr_rewrite
+    }
+
+    # =====================================================
+    # Post-Proxy Section (for proxying)
+    # =====================================================
+    post-proxy {
+        # Uncomment if using proxy
+        # attr_rewrite
+
+        # Handle EAP post-proxy
+        eap
+    }
+}

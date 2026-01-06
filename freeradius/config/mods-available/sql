@@ -1,0 +1,74 @@
+# -*- text -*-
+##
+## SQL Module Configuration for FreeRADIUS 3.x
+## Configured for MySQL backend with dynamic VLAN support
+##
+
+sql {
+    # Database driver (mysql, postgresql, sqlite, etc.)
+    driver = "rlm_sql_mysql"
+
+    # Database dialect (mysql, postgresql, sqlite, mssql, oracle)
+    dialect = "mysql"
+
+    # MySQL connection information (replaced by environment variables at runtime)
+    server = "${MYSQL_HOST}"
+    port = ${MYSQL_PORT}
+    login = "${MYSQL_USER}"
+    password = "${MYSQL_PASSWORD}"
+    radius_db = "${MYSQL_DATABASE}"
+
+    # Connection pool settings
+    pool {
+        start = 5
+        min = 4
+        max = 32
+        spare = 10
+        uses = 0
+        retry_delay = 30
+        lifetime = 0
+        idle_timeout = 60
+        connect_timeout = 3.0
+    }
+
+    # Set to 'yes' to read radius clients from the database ('nas' table)
+    read_clients = yes
+
+    # NAS table
+    client_table = "nas"
+
+    # Define table names used by queries.conf
+    # Authorization check table (radcheck)
+    authcheck_table = "radcheck"
+
+    # Authorization reply table (radreply)
+    authreply_table = "radreply"
+
+    # User group mapping table (radusergroup)
+    usergroup_table = "radusergroup"
+
+    # Group check table (radgroupcheck)
+    groupcheck_table = "radgroupcheck"
+
+    # Group reply table (radgroupreply)
+    groupreply_table = "radgroupreply"
+
+    # Accounting table (radacct)
+    acct_table1 = "radacct"
+    acct_table2 = "radacct"
+
+    # Post-auth logging table (radpostauth)
+    postauth_table = "radpostauth"
+
+    # Group attribute for SQL queries
+    group_attribute = "SQL-Group"
+
+    # SQL query file - use the default MySQL queries
+    $INCLUDE ${modconfdir}/${.:name}/main/${dialect}/queries.conf
+
+    # Safe characters for SQL queries
+    safe_characters = "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_: /"
+
+    # SQL-User-Name attribute
+    sql_user_name = "%{User-Name}"
+}

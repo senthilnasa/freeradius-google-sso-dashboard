@@ -1,0 +1,87 @@
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+<div class="container">
+    <h1>Dashboard</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value">{{ stats.active_sessions }}</div>
+            <div class="stat-label">Active Sessions</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🔐</div>
+            <div class="stat-value">{{ stats.total_auth_today }}</div>
+            <div class="stat-label">Authentications Today</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value">{{ stats.total_users_today }}</div>
+            <div class="stat-label">Unique Users Today</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">❌</div>
+            <div class="stat-value">{{ stats.failed_auth_today }}</div>
+            <div class="stat-label">Failed Logins Today</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>Recent Authentications</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Status</th>
+                        <th>VLAN</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for auth in recent_auths %}
+                    <tr>
+                        <td>{{ auth.username }}</td>
+                        <td>
+                            <span class="badge {{ auth.reply == 'Access-Accept' ? 'badge-success' : 'badge-danger' }}">
+                                {{ auth.reply }}
+                            </span>
+                        </td>
+                        <td>{{ auth.vlan_id }}</td>
+                        <td>{{ auth.authdate }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Active Sessions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>VLAN</th>
+                        <th>IP</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in active_sessions %}
+                    <tr>
+                        <td>{{ session.email }}</td>
+                        <td>{{ session.vlan_id }}</td>
+                        <td>{{ session.ip_address }}</td>
+                        <td>{{ session.last_activity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

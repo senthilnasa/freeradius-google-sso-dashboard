@@ -1,0 +1,52 @@
+<aside class="sidebar">
+    <ul class="sidebar-menu">
+        <li>
+            <a href="/dashboard" class="{{ current_route == 'dashboard' ? 'active' : '' }}">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li class="menu-label">Reports</li>
+        <li>
+            <a href="/reports/daily-summary" class="{{ current_route == 'reports/daily-summary' ? 'active' : '' }}">
+                <span class="icon">📅</span>
+                <span>Daily Summary</span>
+            </a>
+        </li>
+        <li>
+            <a href="/reports/monthly-usage" class="{{ current_route == 'reports/monthly-usage' ? 'active' : '' }}">
+                <span class="icon">📈</span>
+                <span>Monthly Usage</span>
+            </a>
+        </li>
+        <li>
+            <a href="/reports/failed-logins" class="{{ current_route == 'reports/failed-logins' ? 'active' : '' }}">
+                <span class="icon">⚠️</span>
+                <span>Failed Logins</span>
+            </a>
+        </li>
+        <li>
+            <a href="/reports/user-distribution" class="{{ current_route == 'reports/user-distribution' ? 'active' : '' }}">
+                <span class="icon">👥</span>
+                <span>User Distribution</span>
+            </a>
+        </li>
+        <li>
+            <a href="/reports/system-health" class="{{ current_route == 'reports/system-health' ? 'active' : '' }}">
+                <span class="icon">💚</span>
+                <span>System Health</span>
+            </a>
+        </li>
+
+        {% if user.canManageUsers() %}
+        <li class="menu-label">Administration</li>
+        <li>
+            <a href="/users" class="{{ current_route == 'users' ? 'active' : '' }}">
+                <span class="icon">👤</span>
+                <span>Admin Users</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</aside>
